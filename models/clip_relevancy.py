@@ -3,12 +3,15 @@ from torchvision import transforms as T
 import numpy as np
 from CLIP import clip_explainability as clip
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 # https://github.com/hila-chefer/Transformer-MM-Explainability/blob/main/CLIP_explainability.ipynb
 class ClipRelevancy(torch.nn.Module):
     def __init__(self, cfg):
+        device = cfg["device"]
+        self.device = device
+        print(f'ClipRelevancy device {device}')
         super().__init__()
         self.cfg = cfg
         # TODO it would make more sense not to load ths model again (already done in the extractor)
@@ -32,6 +35,7 @@ class ClipRelevancy(torch.nn.Module):
             self.bootstrap_negative_text = clip.tokenize(input_negative_prompts).to(cfg["device"])
 
     def image_relevance(self, image_relevance):
+        device = self.device
         patch_size = 32  # hardcoded for ViT-B/32 which we use
         h = w = 224
         image_relevance = image_relevance.reshape(1, 1, h // patch_size, w // patch_size)
@@ -41,6 +45,7 @@ class ClipRelevancy(torch.nn.Module):
         return image_relevance
 
     def interpret(self, image, negative=False):
+        device = self.device
         text = self.text if not negative else self.bootstrap_negative_text
         batch_size = text.shape[0]
         images = image.repeat(batch_size, 1, 1, 1)

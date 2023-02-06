@@ -7,11 +7,14 @@ from CLIP import clip
 
 from util.util import compose_text_with_templates
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class ClipExtractor(torch.nn.Module):
     def __init__(self, cfg):
+        device = cfg["device"]
+        self.device = device
+        print(f'ClipExtractor device {device}')
         super().__init__()
         self.cfg = cfg
         model = clip.load(cfg["clip_model_name"], device=device)[0]
@@ -104,6 +107,7 @@ class ClipExtractor(torch.nn.Module):
         return self.model.encode_image(x)
 
     def get_text_embedding(self, text, template, average_embeddings=False):
+        device = self.device
         if type(text) == str:
             text = [text]
         embeddings = []

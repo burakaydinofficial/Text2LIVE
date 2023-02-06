@@ -25,6 +25,12 @@ def train_model(config):
     torch.manual_seed(seed)
     print(f"running with seed: {seed}.")
 
+    if "device" not in config:
+        config["device"] = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print(f'default device {config["device"]}')
+    else:
+        print(f'train_image device {config["device"]}')
+
     dataset = AtlasDataset(config)
     model = VideoModel(config)
     criterion = AtlasLoss(config)

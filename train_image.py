@@ -15,6 +15,7 @@ from models.image_model import Model
 from util.losses import LossG
 from util.util import tensor2im, get_optimizer
 
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def train_model(config):
 
@@ -26,6 +27,12 @@ def train_model(config):
         np.random.seed(seed)
         torch.manual_seed(seed)
     print(f"running with seed: {seed}.")
+
+    if "device" not in config:
+        config["device"] = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print(f'default device {config["device"]}')
+    else:
+        print(f'train_image device {config["device"]}')
 
     # create dataset, loader
     dataset = SingleImageDataset(config)

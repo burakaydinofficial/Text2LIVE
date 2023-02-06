@@ -1,11 +1,13 @@
 import torch
 from .networks import define_G
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class Model(torch.nn.Module):
     def __init__(self, cfg):
+        device = cfg["device"]
+        print(f'Model device {device}')
         super().__init__()
         self.cfg = cfg
         self.netG = define_G(cfg).to(device)

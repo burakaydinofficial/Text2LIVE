@@ -31,7 +31,8 @@ def train_model(config):
     if "device" not in config:
         config["device"] = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         print(f'default device {config["device"]}')
-    else:
+    else if config["device"] == "cuda":
+        config["device"] = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         print(f'train_image device {config["device"]}')
 
     # create dataset, loader
